@@ -1,0 +1,24 @@
+<%- include('../../partials/header') %>
+<div class="main">
+    <div class="profile-main">
+        <a href="/user/lists" class="btn">&larr; Back to Your Lists</a>
+        <h2>Edit List <%= list.name %></h2>
+        <form class="form" action="/api/list/update" method="post">
+            <input type="text" name="id" id="id" value="<%= list.id %>" hidden disabled >
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" value="<%= list.name %>" required>
+            <label for="description">Description</label>
+            <textarea name="description" id="description" rows="10"><%= list.description %></textarea>
+            <label for="visibility">Visibility</label>
+            <select name="visibility" required>
+                <option value="public" <% if(list.visibility === 'public') {%> selected <% } %> >Public</option>
+                <option value="private" <% if(list.visibility === 'private') {%> selected <% } %>>Private</option>
+            </select>
+            <button type="submit">Update List</button>
+        </form>
+    </div>
+</div>
+<script>
+    
+</script>
+<%- include('../../partials/footer') %>

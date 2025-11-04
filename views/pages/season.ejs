@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+<div class="main">
+    <h1 class=""><%= title %> - <%= data.name %></h1>
+    <div>
+        <a class="btn" href="/tv/<%= tvid %>/seasons">&larr; Back to All Seasons of <%= title %></a>
+    </div>
+<% if (data.episodes) { %>
+    <% for (let i = 0; i < data.episodes.length; i++) { %>
+        <div class="season-box" style="height: fit-content;">
+            <% if (data.episodes[i].still_path !== null) { %>
+                <img class=""  style="height: 150px; width: 250px;" src="https://image.tmdb.org/t/p/original/<%= data.episodes[i].still_path %>" alt="<%= data.episodes[i].name %>">
+                <% } else {%>
+                <img class="" style="height: 150px; width: 250px;" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data.episodes[i].name %>"/>
+            <% }  %>  
+            
+            <div>
+                <h2><%= data.episodes[i].episode_number %> - <%= data.episodes[i].name %></h2>
+                <div class="season-info">
+                    <% if (data.episodes[i].air_date !== null) { %>
+                    <p>Air Date: <%= new Date(data.episodes[i].air_date).toLocaleDateString("en-US", {month: 'long', day: 'numeric', year: 'numeric'}) %></p>
+                    <% } %>
+                </div>
+                <p><%= data.episodes[i].overview %></p>
+            </div>
+        </div>
+    <% } %>
+    <% } %>
+
+</div>
+<%- include('../partials/footer') %>

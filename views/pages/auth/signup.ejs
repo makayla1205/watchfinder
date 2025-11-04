@@ -1,0 +1,63 @@
+<%- include('../../partials/header') %>
+<div class="main">
+     <div class="auth-container">
+        <h1 class="">Create Your Account</h1>
+        <% if (error) { %><p style="color:red"><%= error %></p><% } %>
+        <form action="/auth/signup" class="auth-form" method="post">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required <% if (typeof email !== 'undefined') { %> value = "<%=email%>" <% } %>>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+        <label for="username">Username:</label>
+        <input type="username" name="username" id="username" required <% if (typeof username !== 'undefined') { %> value = "<%=username%>" <% } %>>
+        <p id="usererror"></p>
+        <button>Sign Up</button>
+        <p>Already have an account? <a href="/login">Login here</a> </p>
+        </form>
+     </div>
+    
+</div>
+<script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    const SUPABASE_URL = 'https://cgeybroirwnikjdaimwj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnZXlicm9pcnduaWtqZGFpbXdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwODgzMjYsImV4cCI6MjA3NjY2NDMyNn0.oVSjxftSxNXilUgqvQYGWyC9BGYHYtW1GFFWEpgaGrQ';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function checkUsernameAvailability(username) {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('username', username)
+            .maybeSingle();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+            console.error('Error checking username:', error);
+            return false; // Or handle the error appropriately
+        }
+        //console.log(data)
+        //console.log(!data)
+        return !data; // Returns true if username is available (no data found)
+    }
+
+    const username = document.querySelector('#username')
+    const usernameErr = document.querySelector('#usererror')
+    username.addEventListener('input', async () => {
+      const searchTerm = username.value.trim();
+      if(searchTerm){
+         let value = await checkUsernameAvailability(searchTerm)
+         console.log(value)
+         if ( value == true){
+                  usernameErr.innerHTML = "Username Available"
+                  usernameErr.style.color = "green"
+               } else {
+                  usernameErr.innerHTML = "Username Not Available"
+                  usernameErr.style.color = "red"
+               }
+      } else {
+         usernameErr.innerHTML = ""
+      }
+      
+    })
+
+</script>
+<%- include('../../partials/footer') %></form>

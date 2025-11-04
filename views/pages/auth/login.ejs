@@ -1,0 +1,17 @@
+<%- include('../../partials/header') %>
+<div class="main">
+    <div class="auth-container">
+        <h1 class="">Login to Your Account</h1>
+        <% if (error) { %><p style="color:red"><%= error %></p><% } %>
+        <form action="/auth/login" class="auth-form" method="post">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password">
+            <button>Login</button>
+            <p>Don't have an account? <a href="/signup">Sign up here</a> </p>
+        </form>
+    </div>
+    
+</div>
+<%- include('../../partials/footer') %>

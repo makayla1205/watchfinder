@@ -1,0 +1,135 @@
+<%- include('../../partials/header') %>
+<div id="message-container">
+    
+</div>
+<%- include('../../partials/profileheader') %>
+   
+    <div class="profile-main">
+        <h2>Your Watchlist</h2>
+        <% if (!items.length >= 1) { %>
+            <p>You haven't added any movies or TV shows to your watchlist</p>
+        <% } %>
+        <div class="">
+            <% for(var i=0; i < items?.length; i++) {  %>
+                <div class="h-card">
+                    <div class="h-card-image">
+                        <a href="/<%= items[i]?.media?.type %>/<%= items[i]?.media?.tmdb_id %>">
+                            <% if (items[i]?.media?.poster_path) { %>
+                            <img src="<%= items[i]?.media?.poster_path %>" alt="<%= items[i]?.media?.title%>"/>
+                            <% } else {%>
+                                <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= items[i]?.title %>"/>
+                            <% }  %>                 
+                        </a>
+                    </div>
+                    <div class="h-card-description">
+                        <h3><a href="/<%= items[i]?.media?.type %>/<%= items[i]?.media?.tmdb_id %>"><%= items[i]?.media?.title%></a></h3>
+                        <p><%= items[i]?.media?.description%></p>
+                        <form class="updateForm">
+                            <input type="text" value="<%= items[i]?.media?.id %>" name="id" disabled hidden>
+                            <label for="status">Watch Progress:</label>
+                            <select name="status" id="status" style="min-width: 150px;">
+                                <option value="planned"<% if (items[i]?.status === "planned") { %> selected <% } %>>Planned</option>
+                                <option value="watching"<% if (items[i]?.status === "watching") { %> selected <% } %>>Watching</option>
+                                <option value="completed"<% if (items[i]?.status === "completed") { %> selected <% } %>>Completed</option>
+                                <option value="dropped"<% if (items[i]?.status === "cropped") { %> selected <% } %>>Dropped</option>
+                                <option value="on_hold"<% if (items[i]?.status === "on_hold") { %> selected <% } %>>On Hold</option>
+                            </select>
+                        </form>
+                        <div class="card-action">
+                            <button class="btn" onclick="handleRemove('<%= items[i]?.id %>')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#FFFFFF" d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/></svg>Remove</button>  
+                        </div>
+                    </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<script>
+    async function handleRemove(itemId) {
+        const item = itemId
+        const list = '<%= list.id %>'
+        //call api
+        try {
+            const response = await fetch('/api/list/remove', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({itemid: item}), // Convert the JavaScript object to a JSON string
+            })
+            if (response.status === 401) {
+            alert('Unauthorized - redirecting to login');
+            window.location.href = '/auth/login';
+            return null;
+            }
+            //const data = await response.json();
+            if (!response.ok) {
+            throw new Error(response.error || `HTTP error! status: ${response.status}`);
+            }
+            console.log("Response:", await response)
+            window.location.reload();
+        } catch (error) {
+            console.error('API call failed:', error);
+            return null;
+        }
+        //reload
+    }
+
+    const forms = document.querySelectorAll(".updateForm")
+    forms.forEach( form => {
+        const select = form.querySelector('select')
+        const input = form.querySelector('input')
+        select.addEventListener('change', async () => {
+            try {
+                const response = await fetch('/api/list/update/progress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({status: select.value, id: input.value }), // Convert the JavaScript object to a JSON string
+                })
+                if (response.status === 401) {
+                alert('Unauthorized - redirecting to login');
+                window.location.href = '/auth/login';
+                }
+                //const data = await response.json();
+                if (!response.ok) {
+                throw new Error(response.error || `HTTP error! status: ${response.status}`);
+                }
+                const res = await response.json()
+                showMessage(res)
+                console.log(res.message)
+            } catch (error) {
+                console.error('API call failed:', error);
+            }
+        })
+    })
+
+    function clearMessage() {
+            let msg = document.querySelector('#message-container')
+            //msg.innerHTML = ''
+            msg.removeChild(msg.firstElementChild)
+        }
+
+    function showMessage(res) {
+        let msg = document.querySelector('#message-container')
+        if(res.success === true) {
+            msg.innerHTML += `
+            <div class="message success">
+                <p>${res.message}</p>
+            </div>
+            `
+        } else {
+            msg.innerHTML += `
+            <div class="message error">
+                <p>${res.error}</p>
+            </div>
+            `
+        }
+        setTimeout(clearMessage, 3000);
+    }
+
+</script>
+<%- include('../../partials/footer') %>

@@ -1,0 +1,134 @@
+<html lang="en">
+    <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link rel="stylesheet" href="/stylesheets/style.css">
+       <title><%=title%></title>
+    </head>
+    <body>
+       <div class="navbar">
+           <div><h1 class="italic"><a href="/">Watch<span style="color: indianred;">Finder</span></a></h1></div>
+           <div>
+               <ul class="navigation">
+                   <li class="nav-item"><a href="/movies" class="nav-link">Movies</a></li>
+                   <li class="nav-item"><a href="/tvseries" class="nav-link">Tv Series</a></li>
+                   <li class="nav-item"><a href="/people" class="nav-link">People</a></li>
+               </ul>
+           </div>
+           <div class="nav-search">
+                <form action="/search" method="get" class="searchForm">
+                <input type="search" placeholder="Search for Movies, Tv Series, or People" class="searchBar" name="searchTerm" id="searchInput" required autocomplete="off" role="combobox" aria-expanded="false"
+                aria-controls="search-suggestions" aria-autocomplete="list">
+                <button type="submit" class="searchButton"><svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.77 18.3C9.2807 18.3 7.82485 17.8584 6.58655 17.031C5.34825 16.2036 4.38311 15.0275 3.81318 13.6516C3.24325 12.2757 3.09413 10.7616 3.38468 9.30096C3.67523 7.84029 4.39239 6.49857 5.44548 5.44548C6.49857 4.39239 7.84029 3.67523 9.30096 3.38468C10.7616 3.09413 12.2757 3.24325 13.6516 3.81318C15.0275 4.38311 16.2036 5.34825 17.031 6.58655C17.8584 7.82485 18.3 9.2807 18.3 10.77C18.3 11.7588 18.1052 12.738 17.7268 13.6516C17.3484 14.5652 16.7937 15.3953 16.0945 16.0945C15.3953 16.7937 14.5652 17.3484 13.6516 17.7268C12.738 18.1052 11.7588 18.3 10.77 18.3ZM10.77 4.74999C9.58331 4.74999 8.42327 5.10189 7.43657 5.76118C6.44988 6.42046 5.68084 7.35754 5.22672 8.45389C4.77259 9.55025 4.65377 10.7566 4.88528 11.9205C5.11679 13.0844 5.68824 14.1535 6.52735 14.9926C7.36647 15.8317 8.43556 16.4032 9.59945 16.6347C10.7633 16.8662 11.9697 16.7474 13.0661 16.2933C14.1624 15.8391 15.0995 15.0701 15.7588 14.0834C16.4181 13.0967 16.77 11.9367 16.77 10.75C16.77 9.15869 16.1379 7.63257 15.0126 6.50735C13.8874 5.38213 12.3613 4.74999 10.77 4.74999Z" fill="#000000"/>
+                    <path d="M20 20.75C19.9015 20.7504 19.8038 20.7312 19.7128 20.6934C19.6218 20.6557 19.5392 20.6001 19.47 20.53L15.34 16.4C15.2075 16.2578 15.1354 16.0697 15.1388 15.8754C15.1422 15.6811 15.221 15.4958 15.3584 15.3583C15.4958 15.2209 15.6812 15.1422 15.8755 15.1388C16.0698 15.1354 16.2578 15.2075 16.4 15.34L20.53 19.47C20.6704 19.6106 20.7493 19.8012 20.7493 20C20.7493 20.1987 20.6704 20.3893 20.53 20.53C20.4608 20.6001 20.3782 20.6557 20.2872 20.6934C20.1962 20.7312 20.0985 20.7504 20 20.75Z" fill="#000000"/>
+                    </svg></button>
+                </form> 
+                <ul id="search-suggestions" role="listbox">
+                    <li>the wind</li>
+                </ul>
+            </div>
+            <div>
+               <ul class="navigation">
+                <% if (user) { %>
+                   <li class="nav-item"><a href="/user/profile" class="nav-link">Profile</a></li>
+                   <li class="nav-item"><a href="/auth/logout" class="nav-link">Logout</a></li>
+                <% } else { %>
+                   <li class="nav-item"><a href="/auth/login" class="nav-link">Login</a></li>
+                   <li class="nav-item"><a href="/auth/signup" class="nav-link">Sign Up</a></li>
+                <% } %>
+               </ul>
+           </div>
+       </div>
+       <script>
+            (() => {
+                const input = document.getElementById("searchInput");
+                const list  = document.getElementById("search-suggestions");
+                const esc = s => s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+                let items = [];
+                let active = -1;
+
+                input.addEventListener("input", () => {
+                    const searchTerm = input.value.trim();
+                    if(!searchTerm) { items=[]; show(false); return; }
+                    console.log("about to call query")
+                    query(searchTerm);
+                })
+
+                input.addEventListener("focus", () => { if (items.length) show(true); });
+                input.addEventListener("blur",  () => setTimeout(() => show(false), 120));
+
+                input.addEventListener("keydown", (e) => {
+                    if (list.style.display !== "block") return;
+                    if (e.key === "ArrowDown") { e.preventDefault(); setActive(Math.min(active + 1, items.length - 1)); }
+                    else if (e.key === "ArrowUp") { e.preventDefault(); setActive(Math.max(active - 1, 0)); }
+                    else if (e.key === "Enter") { if (active >= 0) { e.preventDefault(); select(active); } }
+                    else if (e.key === "Escape") { show(false); }
+                });
+
+                async function query(searchTerm) {
+                    try {
+                        const response = await fetch(`/api/search?searchTerm=${searchTerm}`);
+                        const data = await response.json();
+                        //cache
+                        console.log(data);
+                        render(data);
+                    } catch (e) {
+                        console.error(e)
+                    }
+                }
+
+                function render(data) {
+                    items = data;
+                    list.innerHTML = "";
+                    items.forEach((it, i) => {
+                        const li = document.createElement("li");
+                        li.id = `opt-${i}`; li.role = "option"; li.setAttribute("aria-selected","false");
+                        li.innerHTML = `
+                            ${it.poster ? `<img src="${it.poster}" alt="">` : ""}
+                            <div><div><strong>${esc(it.title)}</strong>${it.year ? ` (${it.year})` : ""}</div>
+                            <div class="meta">${
+                            it.media_type === "tv"
+                                ? "TV"
+                                : it.media_type === "movie"
+                                ? "Movie"
+                                : "Person"
+                            }</div>`;
+                        li.addEventListener("mouseenter", () => setActive(i));
+                        li.addEventListener("mousedown", e => e.preventDefault()); // keep input focused
+                        li.addEventListener("click", () => select(i));
+                        list.appendChild(li);
+                    });
+                    show(true);
+                }
+
+                list.addEventListener("mouseleave", () => {
+                const prev = list.querySelector('[aria-selected="true"]');
+                if (prev) prev.setAttribute("aria-selected", "false");
+                active = -1;
+                input.removeAttribute("aria-activedescendant");
+                });
+
+                const show = on => {
+                    list.style.display = on && items.length ? "block" : "none";
+                    input.setAttribute("aria-expanded", on && items.length ? "true" : "false");
+                };
+
+                function setActive(i) {
+                    const prev = list.querySelector('[aria-selected="true"]'); if (prev) prev.setAttribute("aria-selected","false");
+                    active = i; const el = document.getElementById(`opt-${i}`);
+                    if (el) { el.setAttribute("aria-selected","true"); input.setAttribute("aria-activedescendant", el.id); el.scrollIntoView({ block: "nearest" }); }
+                }
+
+                function select(i) {
+                    const it = items[i]; if (!it) return;
+                    input.value = it.title; show(false);
+                    // Do something useful: navigate or fill a form
+                    window.location.href = `/${it.media_type}/${it.id}`;
+                    console.log("Selected:", it);
+                }
+
+            })();
+</script>
+
+       </script>

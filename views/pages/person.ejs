@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+<div class="main" style="background-image: linear-gradient(rgba(205, 92, 92, 0.707), rgba(205, 92, 92, 0.707)), url(/images/bg.jpg); background-repeat: no-repeat;background-size: cover;">
+    <div class="title-box">        
+        <div class="title-layout">
+            <div class="left-col">
+                <% if (data.profile_path) { %>
+                 <img src="https://image.tmdb.org/t/p/original/<%= data.profile_path %>" alt="">
+                <% } else {%>
+                    <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data.name %>"/>
+                <% }  %>  
+                <div class="bio-info">
+                    <% if(data.birthday) { %>
+                    <div class="bio-info-item">
+                        <p>Birthday </p>
+                        <p><%= data.birthday %></p>
+                    </div>
+                    <% } %>
+                    <% if(data.deathday) { %>
+                    <div class="bio-info-item">
+                        <p>Died </p>
+                        <p><%= data.deathday %></p>
+                    </div>
+                    <% } %>
+                    <% if(data.place_of_birth) { %>
+                    <div class="bio-info-item">
+                        <p>Birthplace </p>
+                        <p><%= data.place_of_birth %></p>
+                    </div>
+                    <% } %>
+                    <% if(data.gender) { %>
+                    <div class="bio-info-item">
+                        <p>Gender </p>
+                        <% if (data.gender === 1 ) { %> 
+                            <p>Female</p> 
+                        <% } else { %>
+                            <p>Male</p> 
+                        <%}%>
+                    </div>
+                    <% } %>
+                    <% if(data.known_for_department) { %>
+                    <div class="bio-info-item">
+                        <p>Known For </p>
+                        <p><%= data.known_for_department %></p>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+    
+            <div class="right-col">
+                    <div class="title-bar">
+                    <h1><%= data.name %></h1>   
+                </div> 
+                <p><% if (data.biography === "" ) { %> No biography available <% } %></p>                
+                <p><%= data.biography %></p>
+            </div> 
+        </div>
+        <% if (credits.length > 0) { %>
+            <div>
+                <h2>Acting Credits</h2>
+                <div class="carousel-container">
+                    <button class="scroll-button left-button">&larr;</button>
+                    <div class="carousel-content">
+                
+                    <% for( let i = 0; i < credits.length; i++ ) { %>
+                        <div class="carousel-content-item">
+                            <div class="card">
+                                <% if (credits[i].poster_path) { %>
+                                <a href="/<%= credits[i].media_type%>/<%= credits[i].id %>"><img src="https://image.tmdb.org/t/p/original/<%= credits[i].poster_path %>" alt=""></a>
+                                <% } else {%>
+                                <a href="/<%= credits[i].media_type%>/<%= credits[i].id %>"><img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= credits[i].name %>"/></a>
+                                <% }  %>         
+                                <h4><a href="/<%= credits[i].media_type%>/<%= credits[i].id %>"><% if (credits[i].media_type === "movie") {%> <%= credits[i].title %> <% } else { %> <%= credits[i].name %> <% } %> </a></h4>
+                                <p><%= credits[i].character %></p>
+                            </div>
+                        </div>
+                    <% } %>
+                    
+                    </div>
+                    <button class="scroll-button right-button">&rarr;</button>
+                </div>
+            </div>
+        <% } %>
+
+        <% if (crew.length > 0) { %>
+            <div>
+                <h2>Film Credits</h2>
+                <div class="carousel-container">
+                    <button class="scroll-button left-button">&larr;</button>
+                    <div class="carousel-content">
+                
+                    <% for( let i = 0; i < crew.length; i++ ) { %>
+                        <div class="carousel-content-item">
+                            <div class="card">
+                                <% if (crew[i].poster_path) { %>
+                                <a href="/<%= crew[i].media_type%>/<%= crew[i].id %>"><img src="https://image.tmdb.org/t/p/original/<%= crew[i].poster_path %>" alt=""></a>
+                                <% } else {%>
+                                <a href="/<%= crew[i].media_type%>/<%= crew[i].id %>"><img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= crew[i].name %>"/></a>
+                                <% }  %>         
+                                <h4><a href="/<%= crew[i].media_type%>/<%= crew[i].id %>"><% if (crew[i].media_type === "movie") {%> <%= crew[i].title %> <% } else { %> <%= crew[i].name %> <% } %> </a></h4>
+                                <p><%= crew[i].job %></p>
+                            </div>
+                        </div>
+                    <% } %>
+                    
+                    </div>
+                    <button class="scroll-button right-button">&rarr;</button>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+</div>
+<%- include('../partials/footer') %>

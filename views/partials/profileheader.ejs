@@ -1,0 +1,15 @@
+<div class="main">
+        <div class="profile-layout">
+        <div class="left-col">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541" alt="">
+        </div>
+
+        <div class="right-col">
+                <div class="title-bar">
+                <h1><%= profile.username %></h1> 
+                <p>Member Since <%= new Date(profile.created_at).toLocaleString('default', { month: 'long' }) %> <%= new Date(profile.created_at).toLocaleString('default', { year: 'numeric' }) %></p>  
+            </div>                 
+        </div> 
+    </div>
+    <%- include('./profilenav') %>
+    

@@ -1,0 +1,390 @@
+<%- include('../partials/header') %>
+<div id="message-container">
+    
+</div>
+<% if (data.trailer && data.trailer.key) { %>
+<div class="modal">
+    <div class="modal-content">
+        <p><%= data.title %> Trailer</p>
+        <span class="close">&times;</span>
+        <iframe src="https://www.youtube.com/embed/<%= data.trailer.key %>" allowfullscreen class="trailer"></iframe>
+    </div>
+</div>
+<% } %>
+
+    <div class="backdrop" <% if (data.backdrop !== null) { %> style="background-image: url('<%= data.backdrop %>'); background-color: whitesmoke;" <% } %> >
+        <div class="title-box">        
+            <div class="title-layout">
+                <div class="left-col">
+                    <img src="<%= data.poster %>" alt="">     
+                </div>
+                <div class="right-col">
+                     <div class="title-bar">
+                        <h1><%= data.title %></h1>
+                        <div class="title-bar-info">
+                            <% if (data.release_date !== null) {%>
+                                <p>&#x2022;</p>
+                                <p><%= data.release_date.toString().substring(0,4) %></p>
+                            <% } %>
+                            <p>&#x2022;</p>
+                            <p><%= data.status %></p>
+                            <% if (data.runtime !== null) {%>
+                            <p>&#x2022;</p>
+                            <p><%= (Math.floor(data.runtime/60))%>Hr <%= (data.runtime)% 60 %>min</p> 
+                            <% } %>
+                        </div>
+                        
+                    </div>
+                    <% if (data.tagline !== null ) {%>
+                        <p class="tagline">"<%= data.tagline %>"</p>
+                    <% } %>
+                    <p><%= data.overview %></p>
+                     <div>   
+                        <div class="genreList">
+                            <% if (data.genres) { %>
+                                <% for( let i = 0; i < data.genres.length; i++ ) { %>
+                                    <% if (data.type === "movie") { %>
+                                    <a href="/movies?sort=popularity.desc&genres=<%= data.genres[i].id%>"><p><%= data.genres[i].name %></p></a>
+                                    <% } else { %>
+                                        <a href="/tvseries?sort=popularity.desc&genres=<%= data.genres[i].id%>"><p><%= data.genres[i].name %></p></a>
+                                    <% } %>
+                                <% } %>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <% if (user) { %>
+                    <button id="watchlist-btn" class="additem"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M192 64C156.7 64 128 92.7 128 128L128 544C128 555.5 134.2 566.2 144.2 571.8C154.2 577.4 166.5 577.3 176.4 571.4L320 485.3L463.5 571.4C473.4 577.3 485.7 577.5 495.7 571.8C505.7 566.1 512 555.5 512 544L512 128C512 92.7 483.3 64 448 64L192 64z"/></svg></button>
+                    <button id="fav-btn" class="additem"><svg class="icon"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M305 151.1L320 171.8L335 151.1C360 116.5 400.2 96 442.9 96C516.4 96 576 155.6 576 229.1L576 231.7C576 343.9 436.1 474.2 363.1 529.9C350.7 539.3 335.5 544 320 544C304.5 544 289.2 539.4 276.9 529.9C203.9 474.2 64 343.9 64 231.7L64 229.1C64 155.6 123.6 96 197.1 96C239.8 96 280 116.5 305 151.1z"/></svg></button>
+                    <div id="list-group">
+                        <button id="list-btn"><svg class="icon"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M104 112C90.7 112 80 122.7 80 136L80 184C80 197.3 90.7 208 104 208L152 208C165.3 208 176 197.3 176 184L176 136C176 122.7 165.3 112 152 112L104 112zM256 128C238.3 128 224 142.3 224 160C224 177.7 238.3 192 256 192L544 192C561.7 192 576 177.7 576 160C576 142.3 561.7 128 544 128L256 128zM256 288C238.3 288 224 302.3 224 320C224 337.7 238.3 352 256 352L544 352C561.7 352 576 337.7 576 320C576 302.3 561.7 288 544 288L256 288zM256 448C238.3 448 224 462.3 224 480C224 497.7 238.3 512 256 512L544 512C561.7 512 576 497.7 576 480C576 462.3 561.7 448 544 448L256 448zM80 296L80 344C80 357.3 90.7 368 104 368L152 368C165.3 368 176 357.3 176 344L176 296C176 282.7 165.3 272 152 272L104 272C90.7 272 80 282.7 80 296zM104 432C90.7 432 80 442.7 80 456L80 504C80 517.3 90.7 528 104 528L152 528C165.3 528 176 517.3 176 504L176 456C176 442.7 165.3 432 152 432L104 432z"/></svg></button>
+                    <div id="list-suggestions">
+                            <h3>Your lists</h3>
+                    </div>
+                    </div>
+
+                    <% } %>
+                    <% if (data.trailer && data.trailer.key) { %>
+                    <button class="open-modal">Watch Trailer</button>
+                    <% } %>
+                    </div>
+                    
+                </div> 
+            </div>
+           
+            <% if (data.cast.length > 0) { %>
+            <div>
+                <h2>Cast</h2>
+                <div class="carousel-container">
+                    <button class="scroll-button left-button">&larr;</button>
+                    <div class="carousel-content">
+                    <% if (data.cast) { %>
+                    <% for( let i = 0; i < data.cast.length; i++ ) { %>
+                        <div class="carousel-content-item">
+                            <div class="card">
+                                <% if (data.cast[i].profile_path) { %>
+                                <a href="/person/<%= data.cast[i].id %>"><img src="https://image.tmdb.org/t/p/original/<%= data.cast[i].profile_path %>" alt=""></a>
+                                <% } else {%>
+                                <a href="/person/<%= data.cast[i].id %>"><img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data.cast[i].name %>"/></a>
+                                <% }  %>         
+                                <h4><a href="/person/<%= data.cast[i].id %>"><%= data.cast[i].name %></a></h4>
+                                <p><%= data.cast[i].character %></p>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% } %>
+                    </div>
+                    <button class="scroll-button right-button">&rarr;</button>
+                </div>
+            </div>
+            <% } %>
+
+            <% if (type === "movie") { %>
+                <% if (data.collection !== null) { %>      
+                <div>
+                    <div class="collection" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://image.tmdb.org/t/p/original/<%= data.collection.backdrop_path %>');">
+                        <h2>Part of the <%=data.collection.name%></h2>
+                        <a href="/collection/<%=data.collection.id%>"><button>View the Collection</button></a>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
+
+            <% if (type === "tv") { %>
+            <div>
+                <% if (data.next_episode_to_air !== null) {%>
+                <h2> Current Season</h2>
+                <%} else {%>
+                <h2> Last Season</h2>
+                <% } %>
+                <div class="season-box">
+                    <% if (currentSeason) { %>
+                        <% if (currentSeason.poster_path !== null) { %>
+                            <a href="/tv/<%= data.id %>/seasons/<%= currentSeason.season_number%>"><img class="" src="https://image.tmdb.org/t/p/original/<%= currentSeason.poster_path %>" alt="<%= currentSeason.name %>"></a>
+                            <% } else {%>
+                                <a href="/tv/<%= data.id %>/seasons/<%= currentSeason.season_number%>"><img class="" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= currentSeason.name %>"/></a>
+                            <% }  %>  
+                        
+                        <div>
+                            <a href="/tv/<%= data.id %>/seasons/<%= currentSeason.season_number%>"><h2><%= currentSeason.name %></h2></a>
+                            <div class="season-info">
+                                <% if (currentSeason.air_date !== null) { %>
+                                <p><%= currentSeason.air_date.split("-")[0] %></p>
+                                <p>&#x2022;</p>
+                                <% } %>
+                                <p><%= currentSeason.episode_count %> episodes</p>
+                            </div>
+                            <p><%= currentSeason.overview %></p>
+                        </div>
+                    <% }  %> 
+                </div>
+                <a href="/tv/<%= data.id %>/seasons" class="btn">View All Seasons</a>
+            </div>  
+            <% } %>
+            <br>
+            <% if (similar.length > 0) {%> 
+                <div>
+                    <h2>Similar Titles</h2>
+                    <div class="carousel-container">
+                        <button class="scroll-button left-button">&larr;</button>
+                        <div class="carousel-content">
+                        
+                        <% for( let i = 0; i < similar.length; i++ ) { %>
+                            <div class="carousel-content-item">
+                                <div class="card">
+                                    <% if (similar[i].poster_path) { %>
+                                    <a href="/<%= type %>/<%= similar[i].id %>"><img src="https://image.tmdb.org/t/p/original/<%= similar[i].poster_path %>" alt=""></a>
+                                    <% } else {%>
+                                    <a href="/<%= type %>/<%= similar[i].id %>"><img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<% if (type === 'movie') { %> <%= similar[i].title %> <% } else { %> <%= similar[i].name %> <% } %>"/></a>
+                                    <% }  %>         
+                                    <h4><a href="/<%= type %>/<%= similar[i].id  %>"><% if (type === 'movie') { %> <%= similar[i].title %> <% } else { %> <%= similar[i].name %> <% } %></a></h4>
+                                </div>
+                            </div>
+                        <% } %>
+                        
+                        </div>
+                        <button class="scroll-button right-button">&rarr;</button>
+                    </div>
+                </div>
+            <% } %>
+            
+        </div>
+    </div>
+
+<% if (data.trailer && data.trailer.key) { %>
+<script>
+    const modal = document.querySelector(".modal")
+    const openbtn = document.querySelector(".open-modal")
+    const closebtn = document.querySelector(".close")
+    const video = document.querySelector(".trailer")
+    openbtn.addEventListener('click', () => {
+        modal.style.display = "block"
+    })
+    closebtn.addEventListener('click', () => {
+        modal.style.display = "none"
+        video.src = "https://www.youtube.com/embed/<% if (data.trailer && data.trailer.key) {%> <%= data.trailer.key %> <% } %>"
+    })
+</script>
+<% }%>
+<% if (user) { %>
+<script>
+    const watchlistbtn = document.querySelector('#watchlist-btn');
+    const favbtn = document.querySelector('#fav-btn');
+    getLists()
+    //MediaInUserLists('<%= data.id %>')
+
+    async function MediaInUserLists(media) {
+        const response = await fetch('/api/lists/media', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({tmdbid: media}), // Convert the JavaScript object to a JSON string
+        })
+        if (response.status === 401) {
+            //alert('Unauthorized - redirecting to login');
+            window.location.href = '/auth/login';
+            return null;
+        }
+            //const data = await response.json();
+        if (!response.ok) {
+            throw new Error(response.error || `HTTP error! status: ${response.status}`);
+        }
+        const res = await response.json()
+        console.log(res)
+        const watchlistbtn = document.querySelector('#watchlist-btn');
+        const favbtn = document.querySelector('#fav-btn');
+        const btns = document.querySelectorAll('.additem');
+        res.data?.forEach(l => {
+            //console.log(l.kind)
+            for(var i= 0; i < btns.length; i++){
+                if(btns[i].getAttribute('key') == l.id) {
+                    btns[i].querySelector('svg').classList.add('icon-red')
+                }
+            }
+        });
+        return res;
+    }
+
+    //get all user lists - set listid key attribute
+    async function getLists(){
+        try {
+            const response = await fetch('/api/lists', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin',
+            })
+            if (response.status === 401) {
+                //alert('Unauthorized - redirecting to login');
+                window.location.href = '/auth/login';
+                return null;
+            }
+                //const data = await response.json();
+            if (!response.ok) {
+                throw new Error(response.error || `HTTP error! status: ${response.status}`);
+            }
+            const res = await response.json()
+            const lists = res.lists
+            //console.log(lists)
+            const watchlistbtn = document.querySelector('#watchlist-btn');
+            const favbtn = document.querySelector('#fav-btn');
+            const listbox = document.querySelector("#list-suggestions")
+            lists.forEach(l => {
+                if(l.kind === 'favorites') {
+                    favbtn.setAttribute('key', l.id)
+                } else if (l.kind === 'watchlist') {
+                    watchlistbtn.setAttribute('key', l.id)
+                } else {
+                    listbox.innerHTML += `
+                    <div class="list-item">
+                    <p>${l.name}</p>
+                    <button class="additem" key=${l.id}>
+                        <input type=text name="listid" value="${l.id}" disabled hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 640 640"><path fill="#ffffff" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+                    </button>
+                    </div>
+                    `
+                }
+            })
+            await MediaInUserLists('<%= data.id %>')
+            const addTitle = document.querySelectorAll('.additem')
+            console.log(addTitle)
+            addTitle.forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const data = {
+                            tmdb: {
+                                tmdb_id: '<%= data.id %>',
+                                type: '<%= type %>',          
+                                title: '<%= data.title %>',
+                                description: '<%= data.overview %>',
+                                poster_path: '<%= data.poster %>',
+                            },
+                            list_id: btn.getAttribute('key')
+                        }
+                        if (btn.querySelector('svg').classList.contains("icon-red")) {
+                            const response = await fetch('/api/list/remove/media', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify(data), // Convert the JavaScript object to a JSON string
+                            })
+                            if (response.status === 401) {
+                                //alert('Unauthorized - redirecting to login');
+                                window.location.href = '/auth/login';
+                                return null;
+                            }
+                                //const data = await response.json();
+                            if (!response.ok) {
+                                throw new Error(response.error || `HTTP error! status: ${response.status}`);
+                            }
+                            const res = await response.json()
+                            showMessage(res)
+                            btn.querySelector('svg').classList.remove('icon-red')
+                        } else {
+                            const response = await fetch('/api/list/add', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                credentials: 'same-origin',
+                                body: JSON.stringify(data), // Convert the JavaScript object to a JSON string
+                            })
+                            if (response.status === 401) {
+                                //alert('Unauthorized - redirecting to login');
+                                window.location.href = '/auth/login';
+                                return null;
+                            }
+                                //const data = await response.json();
+                            if (!response.ok) {
+                                throw new Error(response.error || `HTTP error! status: ${response.status}`);
+                            }
+                            const res = await response.json()
+                            showMessage(res)
+                            btn.querySelector('svg').classList.add('icon-red')
+                        }
+                    } catch (error) {
+                        console.error('API call failed:', error);
+                        showMessage({success: false, error: error})
+                    }
+                })
+            })
+
+        } catch (error) {
+            console.error('API call failed:', error);
+            showMessage({success: false, error: error})
+        }
+    }
+
+    //list suggestions popup functionality
+    const listbox = document.querySelector("#list-suggestions")
+    const listbtn = document.querySelector("#list-btn")
+    listbtn.addEventListener('click', () => {
+        if (listbox.style.display === 'none' || listbox.style.display === '') {
+            listbox.style.display = 'flex'; 
+        } else {
+            listbox.style.display = "none";
+        }
+    })
+
+    document.addEventListener('click', function(event) {
+    // Check if the clicked element is NOT the target element or its children
+    // AND NOT the toggle button itself
+        if ((!listbtn.contains(event.target) && event.target !== listbtn) && (!listbox.contains(event.target) && event.target !== listbox)) {
+            listbox.style.display = "none";
+        }
+    });
+
+    function clearMessage() {
+            let msg = document.querySelector('#message-container')
+            //msg.innerHTML = ''
+            msg.removeChild(msg.firstElementChild)
+        }
+
+    function showMessage(res) {
+        let msg = document.querySelector('#message-container')
+        if(res.success === true) {
+            msg.innerHTML += `
+            <div class="message success">
+                <p>${res.message}</p>
+            </div>
+            `
+        } else {
+            msg.innerHTML += `
+            <div class="message error">
+                <p>${res.message}</p>
+            </div>
+            `
+        }
+        setTimeout(clearMessage, 3000);
+    }
+
+</script>
+<% } %>
+
+<%- include('../partials/footer') %>

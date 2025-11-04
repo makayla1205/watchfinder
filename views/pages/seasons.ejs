@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+<div class="main">
+    <h1 class=""><%= title %> - Seasons</h1>
+    <div>
+        <a class="btn" href="/tv/<%= id %>">&larr; Back to <%= title %></a>
+    </div>
+    <% for (let i = 0; i < seasons.length; i++) { %>
+        <div class="season-box">
+            <% if (seasons[i].poster_path !== null) { %>
+                <a href="/tv/<%= id %>/seasons/<%= seasons[i].season_number%>"><img class="" src="https://image.tmdb.org/t/p/original/<%= seasons[i].poster_path %>" alt="<%= seasons[i].name %>"></a>
+                <% } else {%>
+                <a href="/tv/<%= id %>/seasons/<%= seasons[i].season_number%>"><img class="" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= seasons[i].name %>"/></a>
+            <% }  %>  
+            
+            <div>
+                <a href="/tv/<%= id %>/seasons/<%= seasons[i].season_number%>"><h2><%= seasons[i].name %></h2></a>
+                <div class="season-info">
+                    <% if (seasons[i].air_date !== null) { %>
+                    <p><%= seasons[i].air_date.split("-")[0] %></p>
+                    <p>&#x2022;</p>
+                    <% } %>
+                    <p><%= seasons[i].episode_count %> episodes</p>
+                </div>
+                <p><%= seasons[i].overview %></p>
+            </div>
+        </div>
+    <% } %>
+</div>
+<%- include('../partials/footer') %>

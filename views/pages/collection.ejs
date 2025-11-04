@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+<% if (data) { %>
+    <div class="backdrop" style="background-image: url('https://image.tmdb.org/t/p/original/<%= data.backdrop_path %>'); background-color: whitesmoke;">
+        <div class="title-box">        
+            <div class="title-layout">
+                <div class="left-col">
+                    <img src="https://image.tmdb.org/t/p/original/<%= data.poster_path %>" alt="">
+                </div>
+        
+                <div class="right-col">
+                     <div class="title-bar">
+                        <h1><%= data.name %></h1> 
+                    </div>
+                    <p><%= data.overview %></p>
+                </div> 
+            </div>
+    
+            <div>
+                <h2>Movies in Collection</h2>
+                <div class="carousel-container">
+                    <button class="scroll-button left-button">&larr;</button>
+                    <div class="carousel-content">
+                    <% if (data.parts) { %>
+                    <% for( let i = 0; i < data.parts.length; i++ ) { %>
+                         <div class="carousel-content-item">
+                        <div class="card">
+                            <% if (data.parts[i].poster_path) { %>
+                            <a href="/movie/<%= data.parts[i].id %>"><img src="https://image.tmdb.org/t/p/original/<%= data.parts[i].poster_path %>" alt=""></a>
+                            <% } else {%>
+                            <a href="/movie/<%= data.parts[i].id %>"><img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data.parts[i].title %>"/></a>
+                            <% }  %>         
+                            <h4><a href="/movie/<%= data.parts[i].id %>"><%= data.parts[i].title %></a></h4>
+                        </div>
+                        </div>
+                    <% } %>
+                    <% } %>
+                    </div>
+                    <button class="scroll-button right-button">&rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>  
+<%- include('../partials/footer') %>

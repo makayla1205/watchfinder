@@ -1,0 +1,29 @@
+</body>
+<div class="footer">
+    <a href="/"><h1>WatchFinder</h1></a>
+    
+    <ul class="navigation">
+        <li class="nav-item"><a href="/movies" class="nav-link">Movies</a></li>
+        <li class="nav-item"><a href="/tvseries" class="nav-link">Tv Series</a></li>
+        <li class="nav-item"><a href="/people" class="nav-link">People</a></li>
+    </ul>
+</div>
+
+<script>
+    document.querySelectorAll('.carousel-container').forEach(container => {
+    const content = container.querySelector('.carousel-content');
+    const btnLeft = container.querySelector('.left-button');
+    const btnRight = container.querySelector('.right-button');
+
+    btnLeft.addEventListener('click', () => {
+        content.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+
+    btnRight.addEventListener('click', () => {
+        content.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+    });
+
+
+</script>
+</html>

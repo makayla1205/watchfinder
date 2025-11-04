@@ -1,0 +1,23 @@
+<%- include('../../partials/header') %>
+<div class="main">
+    <div class="profile-main">
+        <a href="/user/lists" class="btn">&larr; Back to Your Lists</a>
+        <h2>New List</h2>
+        <form class="form" action="/api/list/new" method="post">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required>
+            <label for="description">Description</label>
+            <textarea name="description" id="description" rows="10"></textarea>
+            <label for="visibility">Visibility</label>
+            <select name="visibility" required>
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+            </select>
+            <button type="submit">Create List</button>
+        </form>
+    </div>
+</div>
+<script>
+    
+</script>
+<%- include('../../partials/footer') %>

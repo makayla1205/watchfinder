@@ -1,0 +1,86 @@
+<div id="message-container">
+    
+</div>
+<%- include('../../partials/header') %>
+<%- include('../../partials/profileheader') %>    
+    <div class="profile-main">
+        <h2>Account Settings</h2>
+        <form id="updateForm" class="form">
+            <p style="color:red" id="error"><%= error %></p>
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" value="<%= profile.username %>">
+            <label for="language">Language</label>
+            <select name="language" id="language">
+                <% for(var i=0; i < languages.length; i++) { %>
+                    <option value="<%= languages[i].english_name %>" <% if (languages[i].english_name === profile.language) {%> selected <% } %>><%= languages[i].english_name %></option>
+                <% } %>
+            </select>
+            <label for="region">Region</label>
+            <select name="region" id="region">
+                <% for(var i=0; i < countries.length; i++) { %>
+                    <option value="<%= countries[i].english_name %>" <% if (countries[i].english_name === profile.country) {%> selected <% } %>><%= countries[i].english_name %></option>
+                <% } %>
+            </select>
+            <button class="btn" type="submit">Update Profile</button>
+        </form>
+        <hr>
+        <div class="btn-group">
+            <button class="btn">Change Email</button>
+            <button class="btn">Change Password</button>
+        </div>
+        
+    </div>
+</div>
+<script>
+    const form = document.getElementById("updateForm")
+    form.addEventListener("submit", async (event) => {
+        try {
+            event.preventDefault();
+            const username = document.querySelector('#username')
+            const language = document.querySelector('#language')
+            const region = document.querySelector('#region')
+            const response = await fetch('/api/profile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({username: username.value, language: language.value, region: region.value}),
+            })
+            if (response.status === 401) {
+                //alert('Unauthorized - redirecting to login');
+                window.location.href = '/auth/login';
+                return null;
+            }
+                //const data = await response.json();
+            if (!response.ok) {
+                throw new Error(response.error || `HTTP error! status: ${response.status}`);
+            }
+            const res = await response.json()
+            let msg = document.querySelector('#message-container')
+            msg.innerHTML += `
+                <div class="message success">
+                    <p>Profile Updated</p>
+                </div>
+                `
+            setTimeout(clearMessage, 3000);
+        } catch (error) {
+            let msg = document.querySelector('#message-container')
+            msg.innerHTML += `
+                <div class="message error">
+                    <p>Internal Serve Error. Try Again Later</p>
+                </div>
+                `
+            setTimeout(clearMessage, 3000);
+        }
+     
+    })
+    
+    function clearMessage() {
+        let msg = document.querySelector('#message-container')
+        //msg.innerHTML = ''
+        msg.removeChild(msg.firstElementChild)
+    }
+    
+</script>
+<%- include('../../partials/footer') %>

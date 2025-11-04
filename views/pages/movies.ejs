@@ -1,0 +1,112 @@
+<%- include('../partials/header') %>
+<%
+// returns a querystring preserving current query, overriding keys provided
+function qsWith(overrides = {}) {
+  const current = new URLSearchParams(query);
+  Object.entries(overrides).forEach(([k, v]) => {
+    if (v === undefined || v === null || v === "") {
+      current.delete(k);
+    } else {
+      current.set(k, String(v));
+    }
+  });
+  return current.toString();
+}
+%>
+<h1 class="heading">Popular <%= title %></h1>
+<div class="layout">
+    <div class="sidebar">
+        <div class="filter-container">
+           
+            <form class="filter-form form"> 
+                <h2>Sort</h2>
+                <select name="sort" class="sort-select">
+                    <option <% if (currentSort === "popularity.asc")  { %> selected <% } %> value="popularity.asc">Popularity Ascending</option>
+                    <option <% if (currentSort === "popularity.desc")  { %> selected <% } %> value = popularity.desc>Popularity Descending</option>
+                    <option <% if (currentSort === "title.asc")  { %> selected <% } %> value="title.asc">Title (A-Z)</option>
+                    <option <% if (currentSort === "title.desc")  { %> selected <% } %> value="title.desc">Title (Z-A)</option>
+                </select>
+                
+                <h2>Filters</h2>
+                
+                <div class="filter-item">
+                    <h4>Release Dates</h4>
+                    <div class="input-group">
+                        <label for="date_from">From:</label>
+                        <input type="date" name="date_from" <% if (selectedFrom !== null )  { %> value=<%= selectedFrom %> <% } %>/>
+                    </div>
+                    <div class="input-group">
+                        <label for="date_to">To:</label>
+                        <input type="date" name="date_to" <% if (selectedTo !== null )  { %> value=<%= selectedTo %> <% } %>/>
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <h4>Genre</h4>
+                    <div class="genre-select-group">
+                        <% genres.forEach(g => { %>
+                            <label>
+                            <input
+                                type="checkbox"
+                                name="genres"
+                                value="<%= g.id %>"
+                                <%= selectedGenres.includes(String(g.id)) ? 'checked' : '' %> />
+                            <span><%= g.name %></span>
+                            </label>
+                        <% }) %>
+                    </div>
+                </div>
+                <button>Submit</button>
+            </form>
+        </div>
+    </div>
+    <div class="main">
+    <div class="container">
+        <% if (!data?.length) { %>
+            <p>No results. Try widening your filters.</p>
+        <% } %>
+        <% if (data) { %>
+        <% for(var i=0; i < data.length; i++) { %>
+            <div class="card">
+                <a href="/movie/<%= data[i].id %>">
+                    <% if (data[i].poster_path) { %>
+                    <img src="https://image.tmdb.org/t/p/original/<%= data[i].poster_path %>" alt="<%= data[i].title%>"/>
+                    <% } else {%>
+                        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data[i].title %>"/>
+                    <% }  %>                 
+                </a>
+                <h4><a href="/movie/<%= data[i].id %>"><%= data[i].title%></a></h4>
+            </div>
+        <% } %>
+        <% } %>
+    </div>
+    <nav class="pagination">
+        <% const current = Number(currentPage); const last = Number(totalPages); %>
+
+        <a class="btn prev <%= current <= 1 ? 'disabled' : '' %>"
+            href="?<%= qsWith({ page: Math.max(1, current - 1) }) %>"
+            aria-disabled="<%= current <= 1 %>">Prev</a>
+
+        <%
+        // compact window around current page: 1 … (c-2 c-1 c c+1 c+2) … last
+        function pageLink(p) { %>
+            <a class="num <%= p === current ? 'active' : '' %>"
+            href="?<%= qsWith({ page: p }) %>"><%= p %></a>
+        <% } %>
+
+        <% if (last <= 7) { // small range, show all %>
+            <% for (let p = 1; p <= last; p++) { pageLink(p); } %>
+        <% } else { %>
+            <% pageLink(1); %>
+            <% if (current > 4) { %><span class="dots">…</span><% } %>
+            <% for (let p = Math.max(2, current - 2); p <= Math.min(last - 1, current + 2); p++) { pageLink(p); } %>
+            <% if (current < last - 3) { %><span class="dots">…</span><% } %>
+            <% pageLink(last); %>
+        <% } %>
+
+        <a class="btn next <%= current >= last ? 'disabled' : '' %>"
+            href="?<%= qsWith({ page: Math.min(last, current + 1) }) %>"
+            aria-disabled="<%= current >= last %>">Next</a>
+    </nav>
+    </div>
+</div>
+<%- include('../partials/footer') %>

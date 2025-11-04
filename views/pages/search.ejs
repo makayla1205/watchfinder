@@ -1,0 +1,69 @@
+<%- include('../partials/header') %>
+<h1 class="heading">Search Results for "<%= searchTerm %>"</h1>
+<div class="main">
+<div class="container">
+    <% for(var i=0; i < data.length; i++) { %>
+        <div class="card">
+            <% if (data[i].media_type == "movie") { %>
+                <a href="/<%= data[i].media_type %>/<%= data[i].id %>">
+                    <% if (data[i].poster_path) { %>
+                     <img src="https://image.tmdb.org/t/p/original/<%= data[i].poster_path %>" alt="<%= data[i].title %>"/>
+                    <% } else {%>
+                        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data[i].title %>"/>
+                    <% }  %>      
+                </a>
+                <h4><a href="/<%= data[i].media_type %>/<%= data[i].id %>"><%= data[i].title %></a></h4>
+            <% } else if (data[i].media_type == "tv") { %>
+                <a href="/<%= data[i].media_type %>/<%= data[i].id %>">
+                    <% if (data[i].poster_path) { %>
+                     <img src="https://image.tmdb.org/t/p/original/<%= data[i].poster_path %>" alt="<%= data[i].name %>"/>
+                    <% } else {%>
+                        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/football%2Csoccer%2Csport%2Cevent-design-template-31189bebe42fe7f743327895731b60ae_screen.jpg?ts=1698356519" alt="<%= data[i].title %>"/>
+                    <% }  %>      
+                </a>
+                <h4><a href="/<%= data[i].media_type %>/<%= data[i].id %>"><%= data[i].name%></a></h4>
+            <% } else if ((data[i].media_type == "person")) { %>
+                <a href="/<%= data[i].media_type %>/<%= data[i].id %>">
+                    <% if (data[i].profile_path) { %>
+                     <img src="https://image.tmdb.org/t/p/original/<%= data[i].profile_path %>" alt="<%= data[i].name %>"/>
+                    <% } else {%>
+                        <img src="https://www.nicepng.com/png/detail/799-7998295_profile-placeholder-woman-720-profile-photo-placeholder-png.png" alt="<%= data[i].title %>"/>
+                    <% }  %>      
+                </a>
+                <h4><a href="/<%= data[i].media_type %>/<%= data[i].id %>"><%= data[i].name%></a></h4>
+            <% } %>
+        </div>
+     <% } %>
+</div>
+
+
+<nav class="pagination">
+        <% const current = Number(currentPage); const last = Number(totalPages); %>
+
+        <a class="btn prev <%= current <= 1 ? 'disabled' : '' %>"
+            href="/search/?searchTerm=<%= searchTerm %>&page=<%= Math.max(1, current - 1) %>"
+            aria-disabled="<%= current <= 1 %>">Prev</a>
+
+        <%
+        // compact window around current page: 1 … (c-2 c-1 c c+1 c+2) … last
+        function pageLink(p) { %>
+            <a class="num <%= p === current ? 'active' : '' %>"
+            href="/search/?searchTerm=<%= searchTerm %>&page=<%=p%>"><%= p %></a>
+        <% } %>
+
+        <% if (last <= 7) { // small range, show all %>
+            <% for (let p = 1; p <= last; p++) { pageLink(p); } %>
+        <% } else { %>
+            <% pageLink(1); %>
+            <% if (current > 4) { %><span class="dots">…</span><% } %>
+            <% for (let p = Math.max(2, current - 2); p <= Math.min(last - 1, current + 2); p++) { pageLink(p); } %>
+            <% if (current < last - 3) { %><span class="dots">…</span><% } %>
+            <% pageLink(last); %>
+        <% } %>
+
+        <a class="btn next <%= current >= last ? 'disabled' : '' %>"
+            href="/search/?searchTerm=<%= searchTerm %>&page=<% Math.min(last, current + 1)%>"
+            aria-disabled="<%= current >= last %>">Next</a>
+    </nav>
+</div>
+<%- include('../partials/footer') %>
