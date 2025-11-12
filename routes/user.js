@@ -15,12 +15,12 @@ router.get('/profile', requireAuth, async (req, res) => {
         .single()
         if(profileErr) {
             console.error(profileErr)
-            res.status(400).render('user/profile', {title: "Profile", profile: {}})
+            res.status(400).render('pages/user/profile', {title: "Profile", profile: {}})
         }
-        res.render('user/profile', {title: "Profile", profile})
+        res.render('pages/user/profile', {title: "Profile", profile})
     } catch (error) {
         console.error('Error retrieving profile:', error);
-        res.status(400).render('user/profile', {title: "Profile", profile: {}})
+        res.status(400).render('pages/user/profile', {title: "Profile", profile: {}})
     }
     
 })
@@ -38,12 +38,12 @@ router.get('/settings', requireAuth, async (req, res) => {
         .single()
         if(profileErr) {
             console.error(profileErr)
-            res.status(400).render('user/settings', {title: "Profile", profile: {}, countries, languages, error:null})
+            res.status(400).render('pages/user/settings', {title: "Profile", profile: {}, countries, languages, error:null})
         }
-        res.render('user/settings', {title: "Account Settings", profile, countries, languages, error:null})
+        res.render('pages/user/settings', {title: "Account Settings", profile, countries, languages, error:null})
     } catch (error) {
         console.error('Error retrieving profile settings:', error);
-        res.status(400).render('user/settings', {title: "Profile", profile: {}, countries: {}, languages: {}, error:null})
+        res.status(400).render('pages/user/settings', {title: "Profile", profile: {}, countries: {}, languages: {}, error:null})
     }
     
 })
@@ -59,7 +59,7 @@ router.get('/favorites', requireAuth, async (req, res) => {
         .single()
         if(profileErr) {
             console.error(profileErr)
-            res.status(400).render('user/favorites', {title: "Favorites", profile: {}, list: {}, items: {}})
+            res.status(400).render('pages/user/favorites', {title: "Favorites", profile: {}, list: {}, items: {}})
         }
         const {data: list, error: listErr} = await supabase
         .from('lists')
@@ -69,7 +69,7 @@ router.get('/favorites', requireAuth, async (req, res) => {
         .single()
         if(listErr) {
             console.error(listErr)
-            res.status(400).render('user/favorites', {title: "Favorites", profile, list: {}, items: {}})
+            res.status(400).render('pages/user/favorites', {title: "Favorites", profile, list: {}, items: {}})
         }
         const {data: items, error: itemsErr} = await supabase
         .from('list_items')
@@ -78,7 +78,7 @@ router.get('/favorites', requireAuth, async (req, res) => {
         .order('added_at', { ascending: true })
         if(itemsErr) {
             console.error(itemsErr)
-            res.status(400).render('user/favorites', {title: "Favorites", profile, list, items: {}})
+            res.status(400).render('pages/user/favorites', {title: "Favorites", profile, list, items: {}})
         }
         const htmlEntities = {
             '&amp;': '&',
@@ -92,10 +92,10 @@ router.get('/favorites', requireAuth, async (req, res) => {
             e.media.title = e.media.title.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;/g, match => htmlEntities[match])
             e.media.description = e.media.description.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;/g, match => htmlEntities[match])
         });
-        res.render('user/favorites', {title: "Favorties", profile, list, items})
+        res.render('pages/user/favorites', {title: "Favorties", profile, list, items})
     } catch (error) {
         console.error('Error retrieving user favorites:', error);
-        res.status(400).render('user/favorites', {title: "Favorites", profile: {}, list: {}, items: {}})
+        res.status(400).render('pages/user/favorites', {title: "Favorites", profile: {}, list: {}, items: {}})
     }
     
 })
@@ -111,7 +111,7 @@ router.get('/watchlist', requireAuth, async (req, res) => {
         .single()
         if(profileErr) {
             console.error(profileErr)
-            res.status(400).render('user/watchlist', {title: "Watchlist", profile: {}, list: {}, items: {}})
+            res.status(400).render('pages/user/watchlist', {title: "Watchlist", profile: {}, list: {}, items: {}})
         }
         const {data: list, error: listErr} = await supabase
         .from('lists')
@@ -121,7 +121,7 @@ router.get('/watchlist', requireAuth, async (req, res) => {
         .single()
         if(listErr) {
             console.error(listErr)
-            res.status(400).render('user/watchlist', {title: "Watchlist", profile, list: {}, items: {}})
+            res.status(400).render('pages/user/watchlist', {title: "Watchlist", profile, list: {}, items: {}})
         }
         const {data: items, error: itemsErr} = await supabase
         .from('list_items')
@@ -130,7 +130,7 @@ router.get('/watchlist', requireAuth, async (req, res) => {
         .order('added_at', { ascending: true })
         if(itemsErr) {
             console.error(itemsErr)
-            res.status(400).render('user/watchlist', {title: "Watchlist", profile, list, items: {}})
+            res.status(400).render('pages/user/watchlist', {title: "Watchlist", profile, list, items: {}})
         }
         const htmlEntities = {
             '&amp;': '&',
@@ -151,7 +151,7 @@ router.get('/watchlist', requireAuth, async (req, res) => {
         .eq('user_id', req.session.user.id)
         if(progressErr) {
             console.error(progressErr)
-            res.status(400).render('user/watchlist', {title: "Watchlist", profile, list, items: {}})
+            res.status(400).render('pages/user/watchlist', {title: "Watchlist", profile, list, items: {}})
         }
     
         // Create a map for efficient lookup of objects in array1 by their 'id'
@@ -172,10 +172,10 @@ router.get('/watchlist', requireAuth, async (req, res) => {
         }
         });
         
-        res.render('user/watchlist', {title: "Watchlist", profile, list, items:mergedArray})
+        res.render('pages/user/watchlist', {title: "Watchlist", profile, list, items:mergedArray})
     } catch (error) {
         console.error('Error retrieving user favorites:', error);
-        res.status(400).render('user/watchlist', {title: "Watchlist", profile: {}, list: {}, items: {}})
+        res.status(400).render('pages/user/watchlist', {title: "Watchlist", profile: {}, list: {}, items: {}})
     }
     
 })
@@ -191,7 +191,7 @@ router.get('/lists', requireAuth, async (req, res) => {
         .single()
         if(profileErr) {
             console.error(profileErr)
-            res.status(400).render('user/lists', {title: "Lists", profile: {}, list: {}})
+            res.status(400).render('pages/user/lists', {title: "Lists", profile: {}, list: {}})
         }
         const {data: list, error: listErr} = await supabase
         .from('lists')
@@ -200,22 +200,22 @@ router.get('/lists', requireAuth, async (req, res) => {
         .eq('kind', 'custom')
         if(listErr) {
             console.error(listErr)
-            res.status(400).render('user/lists', {title: "Lists", profile, list: {}})
+            res.status(400).render('pages/user/lists', {title: "Lists", profile, list: {}})
         }
-        res.render('user/lists', {title: "Lists", profile, list})
+        res.render('pages/user/lists', {title: "Lists", profile, list})
     } catch (error) {
         console.error('Error retrieving user lists:', error);
-        res.status(400).render('user/lists', {title: "Lists", profile: {}, list: {}})
+        res.status(400).render('pages/user/lists', {title: "Lists", profile: {}, list: {}})
     }
     
 })
 
 router.get('/lists/new', requireAuth, async (req, res) => {
     try {
-        res.render('user/newlist', {title: "New List"})
+        res.render('pages/user/newlist', {title: "New List"})
     } catch (error) {
         console.error('Error retrieving user lists:', error);
-        res.status(400).render('user/newlist', {title: "New List"})
+        res.status(400).render('pages/user/newlist', {title: "New List"})
     }
     
 })
@@ -233,7 +233,7 @@ router.get('/lists/:id', requireAuth, async (req, res) => {
         .single()
         if(profileErr) {
             console.error(profileErr)
-            res.status(400).render('user/list', {title: "List", profile: {}, list: {}, items: {}})
+            res.status(400).render('pages/user/list', {title: "List", profile: {}, list: {}, items: {}})
         }
         const {data: list, error: listErr} = await supabase
         .from('lists')
@@ -243,7 +243,7 @@ router.get('/lists/:id', requireAuth, async (req, res) => {
         .single()
         if(listErr) {
             console.error(listErr)
-            res.status(400).render('user/list', {title: "List", profile, list: {}, items: {}})
+            res.status(400).render('pages/user/list', {title: "List", profile, list: {}, items: {}})
         }
         const {data: items, error: itemsErr} = await supabase
         .from('list_items')
@@ -252,7 +252,7 @@ router.get('/lists/:id', requireAuth, async (req, res) => {
         .order('added_at', { ascending: true })
         if(itemsErr) {
             console.error(itemsErr)
-            res.status(400).render('user/list', {title: list.name, profile, list, items: {}})
+            res.status(400).render('pages/user/list', {title: list.name, profile, list, items: {}})
         }
         
         const htmlEntities = {
@@ -267,10 +267,10 @@ router.get('/lists/:id', requireAuth, async (req, res) => {
             e.media.title = e.media.title.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;/g, match => htmlEntities[match])
             e.media.description = e.media.description.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;/g, match => htmlEntities[match])
         });
-        res.render('user/list', {title: list.name, profile, list, items})
+        res.render('pages/user/list', {title: list.name, profile, list, items})
     } catch (error) {
         console.error('Error retrieving user favorites:', error);
-        res.status(400).render('user/list', {title: "Lists", profile: {}, list: {}, items: {}})
+        res.status(400).render('pages/user/list', {title: "Lists", profile: {}, list: {}, items: {}})
     }
     
 })
@@ -289,12 +289,12 @@ router.get('/lists/:id/edit', requireAuth, async (req, res) => {
         .single()
         if(listErr) {
             console.error(listErr)
-            res.status(400).render('user/updatelist', {title: "Edit List", list:{}})
+            res.status(400).render('pages/pages/user/updatelist', {title: "Edit List", list:{}})
         }
-        res.render('user/updatelist', {title: "Edit List", list})
+        res.render('pages/user/updatelist', {title: "Edit List", list})
     } catch (error) {
         console.error('Error retrieving user lists:', error);
-        res.status(400).render('user/newlist', {title: "Edit List", list: {}})
+        res.status(400).render('pages/user/newlist', {title: "Edit List", list: {}})
     }
     
 })

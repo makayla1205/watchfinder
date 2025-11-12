@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         const inTheaters = responses[1];
         const popularMovies = responses[2];
         const popularTv = responses[3];
-        res.render('index', { title: 'WatchFinder', trending, inTheaters, popularMovies, popularTv})
+        res.render('pages/index', { title: 'WatchFinder', trending, inTheaters, popularMovies, popularTv})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -50,7 +50,7 @@ router.get('/movies', async (req, res) => {
         let totalPages = await results.totalPages;
         if ( totalPages > 500) {totalPages = 500};
         const currentPage = await results.currentPage;
-        res.render('movies', { title: 'Movies', data, totalPages, currentPage, currentSort:sort, genres, selectedFrom: from, selectedTo: to, selectedGenres: genreList, query: req.query})
+        res.render('pages/movies', { title: 'Movies', data, totalPages, currentPage, currentSort:sort, genres, selectedFrom: from, selectedTo: to, selectedGenres: genreList, query: req.query})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -81,7 +81,7 @@ router.get('/tvseries', async (req, res) => {
         let totalPages = await results.totalPages;
         if ( totalPages > 500) {totalPages = 500};
         const currentPage = await results.currentPage;
-        res.render('series', { title: 'Tv Series', data, totalPages, currentPage, currentSort: sort, genres, selectedFrom: from, selectedTo: to, selectedGenres: genreList, query: req.query})
+        res.render('pages/series', { title: 'Tv Series', data, totalPages, currentPage, currentSort: sort, genres, selectedFrom: from, selectedTo: to, selectedGenres: genreList, query: req.query})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -99,7 +99,7 @@ router.get('/people', async (req, res) => {
         let totalPages = await results.totalPages;
         if ( totalPages > 500) {totalPages = 500};
         const currentPage = await results.currentPage;
-        res.render('people', { title: 'People', data, totalPages, currentPage})
+        res.render('pages/people', { title: 'People', data, totalPages, currentPage})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -118,7 +118,7 @@ router.get('/search', async (req, res) => {
         const data = await results.data;
         const totalPages = await results.totalPages;
         const currentPage = await results.currentPage;
-        res.render('search', { title: `Search Results For "${searchTerm}"`, searchTerm, data, totalPages, currentPage})
+        res.render('pages/search', { title: `Search Results For "${searchTerm}"`, searchTerm, data, totalPages, currentPage})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -138,7 +138,7 @@ router.get('/movie/:id', async (req, res) => {
         const title = data.title
         const type = "movie"
         const similar = await myFunctions.getSimilar(type, id)
-        res.render('title', { title , id, data, type, similar})
+        res.render('pages/title', { title , id, data, type, similar})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -166,7 +166,7 @@ router.get('/tv/:id', async (req, res) => {
         const currentSeason = pastSeasons.sort(
             (a, b) => new Date(b.air_date) - new Date(a.air_date)
         )[0];
-        res.render('title', {title, id, data, type, currentSeason, similar})
+        res.render('pages/title', {title, id, data, type, currentSeason, similar})
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -181,7 +181,7 @@ router.get('/tv/:id/seasons', async(req, res) => {
     try {
         const data = await myFunctions.getAllSeasons(id)
         const seasons = data.seasons;
-        res.render('seasons', { title:`${data.name}` , id, seasons});
+        res.render('pages/seasons', { title:`${data.name}` , id, seasons});
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -197,7 +197,7 @@ router.get('/tv/:tvid/seasons/:snum', async(req, res) => {
     try {
         const series = await myFunctions.getSeriesByID(tvid)
         const data = await myFunctions.getEpisodesForSeason(tvid, snum)
-        res.render('season', {data, tvid, snum, title: `${series.title}`});
+        res.render('pages/season', {data, tvid, snum, title: `${series.title}`});
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -213,7 +213,7 @@ router.get('/person/:id', async(req, res) => {
         const data = await myFunctions.getPersonByID(id)
         const credits = data.combined_credits.cast
         const crew = data.combined_credits.crew
-        res.render('person', { title:data.name , id, data, credits, crew});
+        res.render('pages/person', { title:data.name , id, data, credits, crew});
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -227,7 +227,7 @@ router.get('/collection/:id', async(req, res) => {
     let id = req.params.id;
     try {
         const data = await myFunctions.getCollectionByID(id)
-        res.render('collection', { title:data.name , id, data});
+        res.render('pages/collection', { title:data.name , id, data});
     } catch (error) {
         console.error('Error fetching data:', error);
     }

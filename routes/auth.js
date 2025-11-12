@@ -9,7 +9,7 @@ const supabase = createClient(
 
 // Login page
 router.get('/login', redirectIfAuthenticated, (req, res) => {
-  res.render('auth/login', { 
+  res.render('pages/auth/login', { 
     title: 'Login',
     error: null 
   });
@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
     });
 
     if (error) {
-      return res.render('auth/login', {
+      return res.render('pages/auth/login', {
         title: 'Login',
         error: error.message
       });
@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error('Login error:', err);
-    res.render('auth/login', {
+    res.render('pages/auth/login', {
       title: 'Login',
       error: 'An unexpected error occurred'
     });
@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
 
 // Signup page
 router.get('/signup', redirectIfAuthenticated, (req, res) => {
-  res.render('auth/signup', { 
+  res.render('pages/auth/signup', { 
     title: 'Sign Up',
     error: null 
   });
@@ -70,7 +70,7 @@ router.post('/signup', async (req, res) => {
       .maybeSingle();
 
       if (user) { 
-        res.render('auth/signup', {
+        res.render('pages/auth/signup', {
           title: 'Sign Up',
           email, username,
           error: 'Username not Available'
@@ -84,7 +84,7 @@ router.post('/signup', async (req, res) => {
     });
 
     if (error) {
-      return res.render('auth/signup', {
+      return res.render('pages/auth/signup', {
         title: 'Sign Up',
         email, username,
         error: error.message
@@ -102,7 +102,7 @@ router.post('/signup', async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error('Signup error:', err);
-    res.render('auth/signup', {
+    res.render('pages/auth/signup', {
       title: 'Sign Up',
       error: 'An unexpected error occurred'
     });
