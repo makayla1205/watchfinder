@@ -39,6 +39,11 @@ app.use('/', mainRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 
-app.listen(app.get('port'), () => {
-    console.log(`Server listening on port ${app.get('port')}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
